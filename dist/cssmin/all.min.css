@@ -1,0 +1,29 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+a {
+    text-decoration: none;
+}
+header, article, section, nav, aside, footer {
+    display: block;
+}
+.grey {
+    color: grey;
+}
+.red {
+    color: red;
+}
+* {
+    padding: 0;
+    margin: 0;
+}
+a {
+    text-decoration: none;
+}
+header, article, section, nav, aside, footer {
+    display: block;
+}
+.grey {
+    color: grey;
+}
