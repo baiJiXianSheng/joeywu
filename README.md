@@ -1,9 +1,10 @@
-***可下载扩展程序如 Markdown Preview Enhanced 可视化看该md文件***
+***如在VSCode中可下载扩展程序如 Markdown Preview Enhanced 可视化看该md文件***
 
 # Gulp 4
 
-~可参考文章：https://juejin.im/post/5ce92417f265da1ba328a0e0#heading-0~ 
-~中文文档：https://www.gulpjs.com.cn/~ 
+~~可参考文章：https://juejin.im/post/5ce92417f265da1ba328a0e0#heading-0~~ 
+<br>
+~~中文文档：https://www.gulpjs.com.cn/~~ 
 
 ### Init project
 cmd: `npm init -y` or `yarn init -y`
@@ -14,7 +15,7 @@ cmd：如果已经有package.json文件，`npm install` or `yarn add` 即可安�
 `npm install gulp -g` or `yarn add gulp -g`；
 
 >项目下：
-开发依赖：`npm install gulp --dev` or `yarn add gulp --dev`
+开发依赖：`npm install gulp --dev` or `yarn add gulp --dev`<br/>
 项目依赖：`npm install gulp` or `yarn add gulp`
 
 ### Create gulpfile.js
@@ -22,7 +23,7 @@ cmd：如果已经有package.json文件，`npm install` or `yarn add` 即可安�
 ```js
     var gulp = require("gulp"),
         less = require("gulp-less"),
-        connect = require("gulp-connect"); // 服务插件可选，如 var browserSync  = requir("browser-sync").create();调用 browserSync.reload();
+        connect = require("gulp-connect"); // 服务插件可选，如 var browserSync  = requir("browser-sync").create()，调用 browserSync.reload();
         
     gulp.task("less", function (done) {
         gulp.src("src/**/*.less") // 获取 stream
