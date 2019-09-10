@@ -1,4 +1,7 @@
 {
+    "presets": [
+        "es2015"
+    ],
     "plugins": [
         [
             // gulp对es7：async 函数的支持
