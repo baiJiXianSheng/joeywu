@@ -1,3 +1,5 @@
+
+var Common = window.Common = {};
 (function (exports) {
 
     exports.author = "joey wu";
@@ -6,7 +8,7 @@
 
     }
     
-})(window.Common = {});
+})(Common);
 
 
 export default Common;

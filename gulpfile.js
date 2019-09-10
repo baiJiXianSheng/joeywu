@@ -52,14 +52,17 @@ function sassmin () {
 // js 压缩、合并
 function jsMin () {
     // 由于 glob 匹配时是按照每个 glob 在数组中的位置依次进行匹配操作的，所以 glob 数组中的取反（negative）glob 必须跟在一个非取反（non-negative）的 glob 后面。第一个 glob 匹配到一组匹配项，然后后面的取反 glob 删除这些匹配项中的一部分。如果取反 glob 只是由普通字符组成的字符串，则执行效率是最高的。
-    return gulp.src([ "src/js/common.js", "src/js/*.js", "!src/js/common.js" ]) 
+    return gulp.src([ "src/js/common.js", "src/js/*.js" ])  // [ "src/js/common.js", "src/js/*.js", "!src/js/common.js" ]
             .pipe(babel(
                 {
                     presets: ['@babel/env']
                 }
             ))
-            .pipe(concat("main.min.js"))
+            // .pipe(concat("main.min.js"))
             .pipe(uglify())
+            .pipe(gulp.dest("src/dist/jsmin"))
+            .pipe(gulp.src("src/dist/jsmin/*.js"))
+            .pipe(concat("main.min.js")) // 所有js目录下的js编译后的css合并成一个 main.min.js
             .pipe(gulp.dest("src/dist/jsmin"));
 }
 
@@ -155,7 +158,7 @@ gulp.task("watch", function (done) {
     }); // html文件变化时只刷新不压缩
     gulp.watch("src/less/*.less", gulp.series("less:dev"));
     gulp.watch("src/sass/*.scss", gulp.series("sass:dev"));
-    gulp.watch("src/**/*.js", gulp.series("js:dev")); // { ignoreInitial: false }，第一次文件修改之前执行，也就是调用 watch() 之后立即执行
+    gulp.watch("src/js/*.js", gulp.series("js:dev")); // { ignoreInitial: false }，第一次文件修改之前执行，也就是调用 watch() 之后立即执行
     gulp.watch("src/assets/*", gulp.series("img:dev"));
 
     done();
