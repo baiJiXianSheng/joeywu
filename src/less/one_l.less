@@ -14,3 +14,24 @@ header, article, section, nav, aside, footer {
 .red {
     color: red;
 }
+marquee {
+    display: block;
+    width: 500px;
+    height: 80px;
+    line-height: 80px;
+    background: rgba(0, 0, 0, 0.2);
+    color: deeppink;
+    font-size: 20px;
+}
+
+footer {
+    ul {
+        li {
+            float: left;
+            margin-left: 20px;
+            &:nth-of-type(1) {
+                margin-left: 0;
+            }
+        }
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "plugins": [
+        [
+            // gulp对es7：async 函数的支持
+            "transform-runtime",
+            {
+                "helpers": false,
+                "polyfill": false,
+                "regenerator": true,
+                "moduleName": "babel-runtime"
+            }
+        ]
+    ]
+}

@@ -1,3 +1,7 @@
+
+// require('babel-polyfill'); // es7：async-await 
+// require('babel-plugin-transform-runtime');
+
 var gulp = require("gulp");
 var babel = require('gulp-babel'); // babel转换
 // var eslint = require('gulp-eslint'); // eslint检测
@@ -29,22 +33,27 @@ function htmlMin () {
 function lessmin () {
     return gulp.src("src/**/*.less")
             .pipe(less())
-            // .concat("less.min.css")
             .pipe(cleanCss())
+            .pipe(gulp.dest("src/dist/cssmin"))
+            .pipe(gulp.src("src/dist/cssmin/**/*.css"))
+            .pipe(concat("all.min.css")) // less 和 sass 编译后的css合并成一个 all.min.css
             .pipe(gulp.dest("src/dist/cssmin"));
 }
 function sassmin () {
     return gulp.src("src/**/*.scss")
             .pipe(sass())
-            // .concat("sass.min.css")
             .pipe(cleanCss())
+            .pipe(gulp.dest("src/dist/cssmin"))
+            .pipe(gulp.src("src/dist/cssmin/**/*.css"))
+            .pipe(concat("all.min.css")) // less 和 sass 编译后的css合并成一个 all.min.css
             .pipe(gulp.dest("src/dist/cssmin"));
 }
 
 // js 压缩、合并
 function jsMin () {
-    return gulp.src("src/js/*.js").
-            pipe(babel(
+    // 由于 glob 匹配时是按照每个 glob 在数组中的位置依次进行匹配操作的，所以 glob 数组中的取反（negative）glob 必须跟在一个非取反（non-negative）的 glob 后面。第一个 glob 匹配到一组匹配项，然后后面的取反 glob 删除这些匹配项中的一部分。如果取反 glob 只是由普通字符组成的字符串，则执行效率是最高的。
+    return gulp.src([ "src/js/common.js", "src/js/*.js", "!src/js/common.js" ]) 
+            .pipe(babel(
                 {
                     presets: ['@babel/env']
                 }
@@ -61,6 +70,9 @@ function imgMin () {
             .pipe(gulp.dest("src/dist/imgmin"));
 }
 
+// 新的导出写法，gulp 会自动兼容 task("", fn) 写法。
+// exports.htmlMin = task(htmlMin);
+
 
 /* -------------------------------------------------------- Clean -------------------------------------------------------- */
 // async-await
@@ -74,32 +86,41 @@ gulp.task("html:build", async function (done) {
 });
 
 /* -------------------------------------------------------- Less -------------------------------------------------------- */
-gulp.task("less:dev", async function (done) {
-    await lessmin().pipe(browserSync.reload());
+gulp.task("less:dev", function (done) {
+    // await lessmin().pipe(browserSync.reload());
+    lessmin();
+    browserSync.reload();
+    done();
 });
 gulp.task("less:build", async function () {
     await lessmin();
 });
 
 /* -------------------------------------------------------- Sass -------------------------------------------------------- */
-gulp.task("sass:dev", async function (done) {
-    await sassmin().pipe(browserSync.reload());
+gulp.task("sass:dev", function (done) {
+    sassmin();
+    browserSync.reload();
+    done();
 });
 gulp.task("sass:build", async function () {
     await sassmin();
 });
 
 /* -------------------------------------------------------- Js -------------------------------------------------------- */
-gulp.task("js:dev", async function () {
-    await jsMin().pipe(browserSync.reload());
+gulp.task("js:dev", function (done) {
+    jsMin();
+    browserSync.reload();
+    done();
 });
 gulp.task("js:build", async function () {
     await jsMin();
 });
 
 /* -------------------------------------------------------- Image -------------------------------------------------------- */
-gulp.task("img:dev", async function () {
-    await imgMin().pipe(browserSync.reload());
+gulp.task("img:dev", function (done) {
+    imgMin();
+    browserSync.reload();
+    done();
 });
 gulp.task("img:build", async function () {
     await imgMin();
@@ -117,7 +138,7 @@ gulp.task("server", function (done) {
     
     // browser-sync 2.0.0+
     browserSync.init({
-        server: "src/", // 静态服务器根目录
+        server: "src", // 静态服务器根目录
         // proxy: "192.168.0.2", // 代理
     
     });
@@ -129,10 +150,12 @@ gulp.task("server", function (done) {
 
 /* -------------------------------------------------------- Watch -------------------------------------------------------- */
 gulp.task("watch", function (done) {
-    gulp.watch("src/**/*.html").on('change', browserSync.reload); // html文件变化时只刷新不压缩
+    gulp.watch("src/**/*.html").on('change', function (eventType, filename) {
+        browserSync.reload();
+    }); // html文件变化时只刷新不压缩
     gulp.watch("src/less/*.less", gulp.series("less:dev"));
     gulp.watch("src/sass/*.scss", gulp.series("sass:dev"));
-    gulp.watch("src/**/*.js", gulp.series("js:dev"));
+    gulp.watch("src/**/*.js", gulp.series("js:dev")); // { ignoreInitial: false }，第一次文件修改之前执行，也就是调用 watch() 之后立即执行
     gulp.watch("src/assets/*", gulp.series("img:dev"));
 
     done();

@@ -6,4 +6,7 @@
 
     }
     
-})(Common || (Common = {}));
+})(window.Common = {});
+
+
+export default Common;
